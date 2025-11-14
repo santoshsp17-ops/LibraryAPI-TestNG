@@ -1,4 +1,3 @@
-
 /**
  * -----------------------------------------------------------------------------
  * Project      : Library API Automation
@@ -37,7 +36,6 @@ public class LibraryAPITestNG {
 
 	// List to store dynamically generated book IDs for deletion later
 	ArrayList<String> ids = new ArrayList<String>();
-
 	/*
 	 * NOTE: If this test suite is executed in parallel mode (via TestNG or
 	 * Jenkins), the shared 'ids' list may be accessed concurrently by multiple

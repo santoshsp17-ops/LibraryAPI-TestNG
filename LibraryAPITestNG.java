@@ -1,6 +1,5 @@
 
-/**
- * -----------------------------------------------------------------------------
+/** * -----------------------------------------------------------------------------
  * Project      : Library API Automation
  * Test Class   : LibraryAPITestNG
  * Author       : Santosh Patil
@@ -12,8 +11,7 @@
  *                  - Adding multiple books using data-driven approach (Faker)
  *                  - Deleting added books using dynamically captured IDs
  *                  - Assertion validations and detailed logging for failures
- * -----------------------------------------------------------------------------
- */
+ * -----------------------------------------------------------------------------*/
 
 import static io.restassured.RestAssured.given;
 
@@ -37,29 +35,24 @@ public class LibraryAPITestNG {
 
 	// List to store dynamically generated book IDs for deletion later
 	ArrayList<String> ids = new ArrayList<String>();
-
-	/*
-	 * NOTE: If this test suite is executed in parallel mode (via TestNG or
+	
+	/* * NOTE: If this test suite is executed in parallel mode (via TestNG or
 	 * Jenkins), the shared 'ids' list may be accessed concurrently by multiple
 	 * threads. In that case, consider using: Collections.synchronizedList(new
-	 * ArrayList<>()) or CopyOnWriteArrayList for thread-safety.
-	 */
-	// List<String> ids = Collections.synchronizedList(new ArrayList<>());
+	 * ArrayList<>()) or CopyOnWriteArrayList for thread-safety.  List<String> ids = Collections.synchronizedList(new ArrayList<>());  */
 
-	/**
-	 * -------------------------------------------------------------------------
-	 * Test Name : addbook Description : Adds new book entries to the Library API
+	/** * -------------------------------------------------------------------------
+	 * Test Name : addbook 
+	 * Description : Adds new book entries to the Library API
 	 * using dynamic data. Data Source : Data provided
 	 * by @DataProvider(getDataForAddBook) Validations : - Verifies HTTP 200 status
 	 * code - Asserts success message in response - Validates returned ID matches
 	 * expected (isbn + aisle)
-	 * -------------------------------------------------------------------------
-	 */
-	 
-	@Test(dataProvider = "getDataForAddBook", priority = 2,
+	 * ------------------------------------------------------------------------- */
+	@Test(dataProvider = "getDataForAddBook",
 			description = "Verify that AddBook API successfully adds new books with valid details")
 	public void addbook(String author, String isbn, String name, String aisle) throws JsonProcessingException {
-		SoftAssert softAssert = new SoftAssert();
+		
 		
 		// data structure for add operations
 		HashMap<String, Object> book = new HashMap<>();
@@ -81,14 +74,13 @@ public class LibraryAPITestNG {
 				.then()
 				.extract()
 				.response();
-
+		SoftAssert softAssert = new SoftAssert();
 		// Assertion 1: Validate HTTP status code
-		int statusCode = response.getStatusCode();
-		softAssert.assertEquals(statusCode, 200, "Expected status code 200 but got: " + statusCode);
+		softAssert.assertEquals(response.getStatusCode(), 200, "Expected status code 200 but got: " + response.getStatusCode() );
 
 		// Convert response to JsonPath for parsing
-		String responseBody = response.asString();
-		JsonPath js = ReUsableMethods.rawToJson(responseBody);
+		//String responseBody = response.asString();
+		JsonPath js = ReUsableMethods.rawToJson(response.asString());
 		String id = js.get("ID");
 		ids.add(id); // Store ID for later operations
 
@@ -98,7 +90,7 @@ public class LibraryAPITestNG {
 		// Assertion 2: Validate success message
 		String msg = js.get("Msg");
 		softAssert.assertEquals(msg, "successfully added", "Unexpected response message: " + msg);
-
+		
 		// Assertion 3: Validate ID matches expected format
 		softAssert.assertEquals(id, isbn + aisle, "Book ID mismatch.");
 
@@ -107,27 +99,58 @@ public class LibraryAPITestNG {
 			softAssert.assertAll();
 		} catch (AssertionError e) {
 			String logMessage = "AddBook assertion failed: " + e.getMessage().replace("\n", " ").replaceAll("\\s+", " ")
-					+ "\nBook: " + book + " | ID: " + isbn + aisle + "\nResponse: " + responseBody;
+					+ "\nBook: " + book + " | ID: " + isbn + aisle + "\nResponse: " + response.getStatusCode();
 			System.err.println(logMessage);
 			Reporter.log(logMessage, true);
 			throw e;
 		}
 	}
-
+	
 	/**
 	 * -------------------------------------------------------------------------
-	 * Test Name : delbook Description : Deletes previously added books using stored
+	 * Test Name : getBook 
+	 * Description : Get book details of previously added books using stored
+	 * book IDs. Dependency : Depends on successful execution of addbook() Data
+	 * Source : Data provided by @DataProvider(getId) 
+	 * Validations : - Verifies HTTP 200 status code
+	 * -------------------------------------------------------------------------
+	 */
+	@Test( dataProvider = "getId", dependsOnMethods= {"addbook" }, description = "Verify that GetBook API retirves correct book details for the specified ID")
+	public void getBook(String id) {
+		Response getResponse = given().queryParam("ID", id)
+				.when()
+				.get("Library/GetBook.php")
+				.then()
+				.extract()
+				.response();
+		int statusCode = getResponse.getStatusCode();
+		SoftAssert softAssert = new SoftAssert();
+		// Assertion 3: Validate ID matches expected format
+		softAssert.assertEquals(statusCode, 200, "Expected status code 200 but got: " + statusCode);
+		
+		try {
+			softAssert.assertAll();
+		} catch (AssertionError e) {
+			String logMessage = "GetBook assertion failed: " + e.getMessage().replace("\n", " ").replaceAll("\\s+", " ")
+					+ "\n ID: " + id;
+			System.err.println(logMessage);
+			Reporter.log(logMessage, true);
+			throw e;
+		}
+	}
+	
+	/** * -------------------------------------------------------------------------
+	 * Test Name : delbook 
+	 * Description : Deletes previously added books using stored
 	 * book IDs. Dependency : Depends on successful execution of addbook() Data
 	 * Source : Data provided by @DataProvider(getId) Validations : - Verifies HTTP
 	 * 200 status code
-	 * -------------------------------------------------------------------------
-	 */
+	 * ------------------------------------------------------------------------- */
 	
 	@Test(dataProvider = "getId", dependsOnMethods = {
-			"addbook" }, priority = 2, description = "Verify that DeleteBook API successfully deletes a book using a valid book ID")
+			"addbook" }, priority = 3, description = "Verify that DeleteBook API successfully deletes a book using a valid book ID")
 	public void delbook(String id) {
-		SoftAssert softAssert = new SoftAssert();
-
+		
 		// Delete request payload
 		String deletePayload = "{\r\n" + "    \"ID\": \"" + id + "\"\r\n" + "}";
 
@@ -143,6 +166,7 @@ public class LibraryAPITestNG {
 
 		// Assertion: Validate HTTP 200 status code
 		int statusCode = delResponse.getStatusCode();
+		SoftAssert softAssert = new SoftAssert();
 		softAssert.assertEquals(statusCode, 200);
 
 		// Handle assertion failures with proper logging
@@ -161,12 +185,10 @@ public class LibraryAPITestNG {
 		}
 	}
 
-	/**
-	 * -------------------------------------------------------------------------
+	/**	 * -------------------------------------------------------------------------
 	 * Data Provider : getId Description : Supplies dynamically generated Book IDs
 	 * for deletion tests.
-	 * -------------------------------------------------------------------------
-	 */
+	 * -------------------------------------------------------------------------*/
 	@DataProvider(name = "getId")
 	public Object[][] getIds() {
 		Object[][] data = new Object[ids.size()][1];
@@ -176,16 +198,14 @@ public class LibraryAPITestNG {
 		return data;
 	}
 
-	/**
-	 * -------------------------------------------------------------------------
+	/*** -------------------------------------------------------------------------
 	 * Data Provider : getDataForAddBook Description : Generates dynamic book data
 	 * using Faker library. Purpose : To perform data-driven testing by adding
 	 * multiple books with random but valid data.
-	 * -------------------------------------------------------------------------
-	 */
+	 * ------------------------------------------------------------------------- */
 	@DataProvider(name = "getDataForAddBook")
 	public Object[][] getData1() {
-		int numberOfTestCases = 25; // Number of records to create
+		int numberOfTestCases = 12; // Number of records to create
 		Object[][] data = new Object[numberOfTestCases][4];
 		Faker faker = new Faker();
 

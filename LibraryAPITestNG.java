@@ -1,9 +1,5 @@
 
 /** * -----------------------------------------------------------------------------
-=======
-/**
- * -----------------------------------------------------------------------------
->>>>>>> b57ba591b94af9eb7a957ecbcc1b3962ef282230
  * Project      : Library API Automation
  * Test Class   : LibraryAPITestNG
  * Author       : Santosh Patil
@@ -39,13 +35,8 @@ public class LibraryAPITestNG {
 
 	// List to store dynamically generated book IDs for deletion later
 	ArrayList<String> ids = new ArrayList<String>();
-
 	
-	/* * NOTE: If this test suite is executed in parallel mode (via TestNG or
-=======
-	/*
-	 * NOTE: If this test suite is executed in parallel mode (via TestNG or
->>>>>>> b57ba591b94af9eb7a957ecbcc1b3962ef282230
+	/** * NOTE: If this test suite is executed in parallel mode (via TestNG or
 	 * Jenkins), the shared 'ids' list may be accessed concurrently by multiple
 	 * threads. In that case, consider using: Collections.synchronizedList(new
 	 * ArrayList<>()) or CopyOnWriteArrayList for thread-safety.  List<String> ids = Collections.synchronizedList(new ArrayList<>());  */
@@ -61,7 +52,6 @@ public class LibraryAPITestNG {
 	@Test(dataProvider = "getDataForAddBook",
 			description = "Verify that AddBook API successfully adds new books with valid details")
 	public void addbook(String author, String isbn, String name, String aisle) throws JsonProcessingException {
-		
 		
 		// data structure for add operations
 		HashMap<String, Object> book = new HashMap<>();
@@ -115,15 +105,13 @@ public class LibraryAPITestNG {
 		}
 	}
 	
-	/**
-	 * -------------------------------------------------------------------------
+	/** * -------------------------------------------------------------------------
 	 * Test Name : getBook 
 	 * Description : Get book details of previously added books using stored
 	 * book IDs. Dependency : Depends on successful execution of addbook() Data
 	 * Source : Data provided by @DataProvider(getId) 
 	 * Validations : - Verifies HTTP 200 status code
-	 * -------------------------------------------------------------------------
-	 */
+	 * ------------------------------------------------------------------------- */
 	@Test( dataProvider = "getId", dependsOnMethods= {"addbook" }, description = "Verify that GetBook API retirves correct book details for the specified ID")
 	public void getBook(String id) {
 		Response getResponse = given().queryParam("ID", id)

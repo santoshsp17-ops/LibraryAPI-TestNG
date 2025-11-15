@@ -1,5 +1,9 @@
 
 /** * -----------------------------------------------------------------------------
+=======
+/**
+ * -----------------------------------------------------------------------------
+>>>>>>> b57ba591b94af9eb7a957ecbcc1b3962ef282230
  * Project      : Library API Automation
  * Test Class   : LibraryAPITestNG
  * Author       : Santosh Patil
@@ -35,8 +39,13 @@ public class LibraryAPITestNG {
 
 	// List to store dynamically generated book IDs for deletion later
 	ArrayList<String> ids = new ArrayList<String>();
+
 	
 	/* * NOTE: If this test suite is executed in parallel mode (via TestNG or
+=======
+	/*
+	 * NOTE: If this test suite is executed in parallel mode (via TestNG or
+>>>>>>> b57ba591b94af9eb7a957ecbcc1b3962ef282230
 	 * Jenkins), the shared 'ids' list may be accessed concurrently by multiple
 	 * threads. In that case, consider using: Collections.synchronizedList(new
 	 * ArrayList<>()) or CopyOnWriteArrayList for thread-safety.  List<String> ids = Collections.synchronizedList(new ArrayList<>());  */

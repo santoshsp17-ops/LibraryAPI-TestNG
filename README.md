@@ -32,3 +32,5 @@ This project automates interactions with a Library API to validate the Add, Get,
 -Plugins (if any)
 
 You can directly run: mvn test.
+
+“Feel free to open an Issue for suggestions or submit a Pull Request if you want to contribute code improvements.”

@@ -122,7 +122,7 @@ public class LibraryAPITestNG {
 				.response();
 		int statusCode = getResponse.getStatusCode();
 		SoftAssert softAssert = new SoftAssert();
-		// Assertion 3: Validate ID matches expected format
+		// Validate HTTP 200 status code
 		softAssert.assertEquals(statusCode, 200, "Expected status code 200 but got: " + statusCode);
 		
 		try {
@@ -131,7 +131,7 @@ public class LibraryAPITestNG {
 			String logMessage = "GetBook assertion failed: " + e.getMessage().replace("\n", " ").replaceAll("\\s+", " ")
 					+ "\n ID: " + id;
 			System.err.println(logMessage);
-			Reporter.log(logMessage, true);
+			Reporter.log(logMessage, false);
 			throw e;
 		}
 	}
@@ -194,7 +194,6 @@ public class LibraryAPITestNG {
 		}
 		return data;
 	}
-
 	/*** -------------------------------------------------------------------------
 	 * Data Provider : getDataForAddBook Description : Generates dynamic book data
 	 * using Faker library. Purpose : To perform data-driven testing by adding

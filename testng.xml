@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+
+
+<!-- Suite order <suite> ::= (groups?, (listeners | packages | test | parameter | method-selectors | suite-files)*)
+	parallel 
+	<suite name="Suite" parallel="methods" thread-count="5"> 
+	<suite name="Suite" parallel="classes" thread-count="5">  -->
+
+  <test thread-count="5" name="Test">
+    <classes>
+            <class name="LibraryAPITestNG"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->

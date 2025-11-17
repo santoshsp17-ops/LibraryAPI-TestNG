@@ -4,7 +4,7 @@
  * Test Class   : LibraryAPITestNG
  * Author       : Santosh Patil
  * Created On   : 30-10-2025
- * Description  : This TestNG-based automation script performs CRUD operations 
+ * Description  : This TestNG-based automation script performs CRUD operations (except update)
  *                on the Library API using RestAssured.
  *                
  *                It includes:
